@@ -35,11 +35,19 @@ class Lexer :
                 else :
                     tokens.append(Token(TokenTipo.TOKEN_REAL, float(numero_final)))
             elif self.caracter_atual == '/' :
-                tokens.append(Token(TokenTipo.TOKEN_DIV))
                 self.avancar()
+                if self.caracter_atual == '=' :
+                    tokens.append(Token(TokenTipo.TOKEN_DIV_IG))
+                    self.avancar()
+                else:
+                    tokens.append(Token(TokenTipo.TOKEN_DIV))
             elif self.caracter_atual == '*' :
-                tokens.append(Token(TokenTipo.TOKEN_MULT))
                 self.avancar()
+                if self.caracter_atual == '=' :
+                    tokens.append(Token(TokenTipo.TOKEN_MULT_IG))
+                    self.avancar()
+                else:
+                    tokens.append(Token(TokenTipo.TOKEN_MULT))
             elif self.caracter_atual == '-' :
                 self.avancar()
                 if self.caracter_atual == '-' :
@@ -130,6 +138,12 @@ class Lexer :
                     tokens.append(Token(TokenTipo.TOKEN_ANDB))
             elif self.caracter_atual == ':' :
                 tokens.append(Token(TokenTipo.TOKEN_BITF))
+                self.avancar()
+            elif self.caracter_atual == ';' :
+                tokens.append(Token(TokenTipo.TOKEN_PTV))
+                self.avancar()
+            elif self.caracter_atual == ',' :
+                tokens.append(Token(TokenTipo.TOKEN_VIRG))
                 self.avancar()
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
