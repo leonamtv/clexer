@@ -45,6 +45,8 @@ class TokenTipo ( Enum ) :
     TOKEN_ANDB       = 'TOKEN_ANDB'         # Operador And bit a bit        '&'
     TOKEN_NOTB       = 'TOKEN_NOTB'         # Operador Not bit a bit        '~'
     TOKEN_BITF       = 'TOKEN_BITF'         # Operador bit field            ':'
+    TOKEN_IGUAL      = 'TOKEN_IGUAL'        # Operador igual                '=='
+    TOKEN_ATRIB      = 'TOKEN_ATRIB'        # Operador atribuição           '='
     
     TOKEN_VIRG       = 'TOKEN_VIRG'         # Virgula
     TOKEN_PTV        = 'TOKEN_PTV'          # Ponto e vírgula

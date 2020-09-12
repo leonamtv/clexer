@@ -145,5 +145,12 @@ class Lexer :
             elif self.caracter_atual == ',' :
                 tokens.append(Token(TokenTipo.TOKEN_VIRG))
                 self.avancar()
+            elif self.caracter_atual == '=' :
+                self.avancar()
+                if self.caracter_atual == '=' :
+                    tokens.append(Token(TokenTipo.TOKEN_IGUAL))
+                    self.avancar()
+                else:
+                    tokens.append(Token(TokenTipo.TOKEN_ATRIB))
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
