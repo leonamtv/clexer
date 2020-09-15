@@ -10,3 +10,9 @@ class Posicao :
         if quebrar_linha:
             self.linha += 1
             self.coluna = 0
+    
+    def __str__ ( self ) :
+        return f"[ lin: {self.linha}, col: {self.coluna} ]"
+
+    def __repr__ ( self ):
+        return str(self)

@@ -1,5 +1,40 @@
 from enum import Enum
 
+keywords = [
+    'auto',  
+    'break',
+    'double',
+    'case',
+    'char',
+    'const',
+    'continue',
+    'default',
+    'do',
+    'else',
+    'enum',
+    'extern',
+    'float',
+    'for',
+    'goto',
+    'if',
+    'int',
+    'long',
+    'register',
+    'return',
+    'short',
+    'signed',
+    'sizeof',
+    'static',
+    'struct',
+    'switch',
+    'typedef',
+    'union',
+    'unsigned',
+    'void',
+    'volatile',
+    'while'
+]
+
 class TokenTipo ( Enum ) :
 
     # Delimitadores
@@ -10,6 +45,7 @@ class TokenTipo ( Enum ) :
     TOKEN_COLCHETEE  = 'TOKEN_COLCHETEE'    # Colchete esquerdo             '['
     TOKEN_COLCHETED  = 'TOKEN_COLCHETED'    # Colchete direito              ']'
 
+
     # Números
     TOKEN_HEXA       = 'TOKEN_HEXA'         # Número hexadecimal            '0x[0-9a-fA-F]+'
     TOKEN_OCT        = 'TOKEN_OCT'          # Número octal                  '0[0-7]+'
@@ -17,6 +53,9 @@ class TokenTipo ( Enum ) :
     TOKEN_INT        = 'TOKEN_INT'          # Número inteiro                '[0-9]+'
     TOKEN_REAL       = 'TOKEN_REAL'         # Número real                   '[0-9]+\.[0-9]+'
     
+    TOKEN_CHAR       = 'TOKEN_CHAR'
+    TOKEN_STR        = 'TOKEN_STR'
+
     # Operadores
     TOKEN_SOMA       = 'TOKEN_SOMA'         # Operador soma                 '+'
     TOKEN_SOMA_IG    = 'TOKEN_SOMA_IG'      # Operador soma e atribui       '+='
@@ -52,36 +91,39 @@ class TokenTipo ( Enum ) :
     TOKEN_PTV        = 'TOKEN_PTV'          # Ponto e vírgula
     TOKEN_EOF        = 'TOKEN_EOF'          # Fim de arquivo
 
-    # KEYWORDS DO C
-    KEYWORD_AUTO     = 'AUTO'             
-    KEYWORD_BREAK    = 'BREAK'           
-    KEYWORD_DOUBLE   = 'DOUBLE'            
-    KEYWORD_CASE     = 'CASE'           
-    KEYWORD_CHAR     = 'CHAR'           
-    KEYWORD_CONST    = 'CONST'           
-    KEYWORD_CONTINUE = 'CONTINUE'           
-    KEYWORD_DEFAULT  = 'DEFAULT'           
-    KEYWORD_DO       = 'DO'           
-    KEYWORD_ELSE     = 'ELSE'           
-    KEYWORD_ENUM     = 'ENUM'           
-    KEYWORD_EXTERN   = 'EXTERN'           
-    KEYWORD_FLOAT    = 'FLOAT'           
-    KEYWORD_FOR      = 'FOR'           
-    KEYWORD_GOTO     = 'GOTO'           
-    KEYWORD_IF       = 'IF'           
-    KEYWORD_INT      = 'INT'           
-    KEYWORD_LONG     = 'LONG'           
-    KEYWORD_REGISTER = 'REGISTER'           
-    KEYWORD_RETURN   = 'RETURN'           
-    KEYWORD_SHORT    = 'SHORT'           
-    KEYWORD_SIGNED   = 'SIGNED'           
-    KEYWORD_SIZEOF   = 'SIZEOF'           
-    KEYWORD_STATIC   = 'STATIC'           
-    KEYWORD_STRUCT   = 'STRUCT'       
-    KEYWORD_SWITCH   = 'SWITCH'       
-    KEYWORD_TYPEDEF  = 'TYPEDEF'       
-    KEYWORD_UNION    = 'UNION'       
-    KEYWORD_UNSIGNED = 'UNSIGNED'           
-    KEYWORD_VOID     = 'VOID'       
-    KEYWORD_VOLATILE = 'VOLATILE'           
-    KEYWORD_WHILE    = 'WHILE'  
+    TOKEN_IDENT      = 'TOKEN_IDENT'        # Identificador
+    TOKEN_KEYWORD    = 'TOKEN_KEYWORD'      # Keyword
+
+# # KEYWORDS DO C
+# KEYWORD_AUTO     = 'AUTO'             
+# KEYWORD_BREAK    = 'BREAK'           
+# KEYWORD_DOUBLE   = 'DOUBLE'            
+# KEYWORD_CASE     = 'CASE'           
+# KEYWORD_CHAR     = 'CHAR'           
+# KEYWORD_CONST    = 'CONST'           
+# KEYWORD_CONTINUE = 'CONTINUE'           
+# KEYWORD_DEFAULT  = 'DEFAULT'           
+# KEYWORD_DO       = 'DO'           
+# KEYWORD_ELSE     = 'ELSE'           
+# KEYWORD_ENUM     = 'ENUM'           
+# KEYWORD_EXTERN   = 'EXTERN'           
+# KEYWORD_FLOAT    = 'FLOAT'           
+# KEYWORD_FOR      = 'FOR'           
+# KEYWORD_GOTO     = 'GOTO'           
+# KEYWORD_IF       = 'IF'           
+# KEYWORD_INT      = 'INT'           
+# KEYWORD_LONG     = 'LONG'           
+# KEYWORD_REGISTER = 'REGISTER'           
+# KEYWORD_RETURN   = 'RETURN'           
+# KEYWORD_SHORT    = 'SHORT'           
+# KEYWORD_SIGNED   = 'SIGNED'           
+# KEYWORD_SIZEOF   = 'SIZEOF'           
+# KEYWORD_STATIC   = 'STATIC'           
+# KEYWORD_STRUCT   = 'STRUCT'       
+# KEYWORD_SWITCH   = 'SWITCH'       
+# KEYWORD_TYPEDEF  = 'TYPEDEF'       
+# KEYWORD_UNION    = 'UNION'       
+# KEYWORD_UNSIGNED = 'UNSIGNED'           
+# KEYWORD_VOID     = 'VOID'       
+# KEYWORD_VOLATILE = 'VOLATILE'           
+# KEYWORD_WHILE    = 'WHILE'  

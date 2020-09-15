@@ -1,7 +1,7 @@
 from core.util.posicao      import Posicao
 from core.util.token        import Token
-from core.util.tokenTipos   import TokenTipo
-from core.util.alfabeto     import digitos
+from core.util.tokenTipos   import TokenTipo, keywords
+from core.util.alfabeto     import digitos, alfabeto, alfanum, alfanumu
 
 class Lexer : 
 
@@ -18,8 +18,11 @@ class Lexer :
     def tokenizar ( self ) :
         tokens = []
         while self.caracter_atual != None :
-            if self.caracter_atual in ' \t':
+            if self.caracter_atual in ' \t\n':
                 self.avancar()
+            elif self.caracter_atual == '#' :
+                while self.caracter_atual not in ( None, '\n' ) :
+                    self.avancar()
             elif self.caracter_atual in digitos + '.':
                 numero_final = ''
                 contador_de_pontos = 0
@@ -34,11 +37,25 @@ class Lexer :
                     tokens.append(Token(TokenTipo.TOKEN_INT, int(numero_final)))
                 else :
                     tokens.append(Token(TokenTipo.TOKEN_REAL, float(numero_final)))
+            elif self.caracter_atual in alfabeto :
+                token = self.parse_word ()
+                tokens.append(token)
+            elif self.caracter_atual == '"':
+                self.avancar()
+                token = self.parse_string()
+                tokens.append(token)
+            elif self.caracter_atual == "'":
+                self.avancar()
+                token = self.parse_char()
+                tokens.append(token)
             elif self.caracter_atual == '/' :
                 self.avancar()
                 if self.caracter_atual == '=' :
                     tokens.append(Token(TokenTipo.TOKEN_DIV_IG))
                     self.avancar()
+                if self.caracter_atual == '/' :
+                    while self.caracter_atual not in ( None, '\n' ) :
+                        self.avancar()
                 else:
                     tokens.append(Token(TokenTipo.TOKEN_DIV))
             elif self.caracter_atual == '*' :
@@ -152,5 +169,36 @@ class Lexer :
                     self.avancar()
                 else:
                     tokens.append(Token(TokenTipo.TOKEN_ATRIB))
+            else :
+                message = 'Erro durante parsing: "' +  self.caracter_atual + '" posição: ' + str(self.posicao)
+                raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
+
+    def parse_word ( self ) :
+        token_str = ''
+        while self.caracter_atual != None and self.caracter_atual in alfanumu :
+            token_str += self.caracter_atual
+            self.avancar()
+        if token_str in keywords :
+            return Token(TokenTipo.TOKEN_KEYWORD, valor=token_str)
+        else :
+            return Token(TokenTipo.TOKEN_IDENT, valor=token_str)
+
+    def parse_string ( self ) :
+        token_str = ''
+        while self.caracter_atual not in ( None, '"' ) :
+            token_str += self.caracter_atual
+            self.avancar()
+        if self.caracter_atual == '"' :
+            self.avancar()
+        return Token(TokenTipo.TOKEN_STR, valor=token_str)
+
+    def parse_char ( self ) :
+        token_str = ''
+        while self.caracter_atual not in ( None, "'" ) :
+            token_str += self.caracter_atual
+            self.avancar()
+        if self.caracter_atual == "'" :
+            self.avancar()
+        return Token(TokenTipo.TOKEN_CHAR, valor=token_str)
