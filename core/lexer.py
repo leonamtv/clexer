@@ -21,8 +21,9 @@ class Lexer :
             if self.caracter_atual in ' \t\n':
                 self.avancar()
             elif self.caracter_atual == '#' :
-                while self.caracter_atual not in ( None, '\n' ) :
-                    self.avancar()
+                token = self.make_preprocessor ()
+                tokens.append(token)
+                self.avancar()
             elif self.caracter_atual in digitos + '.':
                 numero_final = ''
                 contador_de_pontos = 0
@@ -174,6 +175,24 @@ class Lexer :
                 raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
+
+    def make_preprocessor ( self ) :
+        token_str = ''
+        token_tipo = None
+        while self.caracter_atual not in ( None, ' ' ) :
+            token_str += self.caracter_atual
+            self.avancar()
+        if token_str == '#define' :
+            token_tipo = TokenTipo.TOKEN_DEFINE
+        elif token_str == '#include' :
+            token_tipo = TokenTipo.TOKEN_INCLUDE
+        elif token_str == '#pragma' :
+            token_tipo = TokenTipo.TOKEN_PRAGMA
+        token_data = ''
+        while self.caracter_atual not in ( None, '\n' ) :
+            token_data += self.caracter_atual
+            self.avancar()
+        return Token(token_tipo, token_data)
 
     def parse_word ( self ) :
         token_str = ''

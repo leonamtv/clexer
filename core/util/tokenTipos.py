@@ -56,6 +56,10 @@ class TokenTipo ( Enum ) :
     TOKEN_CHAR       = 'TOKEN_CHAR'
     TOKEN_STR        = 'TOKEN_STR'
 
+    TOKEN_INCLUDE    = 'TOKEN_INCLUDE'
+    TOKEN_DEFINE     = 'TOKEN_DEFINE'
+    TOKEN_PRAGMA     = 'TOKEN_PRAGMA'
+
     # Operadores
     TOKEN_SOMA       = 'TOKEN_SOMA'         # Operador soma                 '+'
     TOKEN_SOMA_IG    = 'TOKEN_SOMA_IG'      # Operador soma e atribui       '+='

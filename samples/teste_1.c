@@ -1,4 +1,12 @@
 #include <stdio.h>
+#include <assert.h>
+#include <ctype.h>
+
+#define BATATA 12312312
+
+#pragma startup func1  
+#pragma exit func2  
+
 int main() {
     char c;
     int lowercase_vowel, uppercase_vowel;
