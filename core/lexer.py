@@ -174,13 +174,19 @@ class Lexer :
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
 
+    def make_operador ( self ) :
+        pass
+
     def make_numbers ( self ) :
         numero_final = ''
         contador_de_pontos = 0
         tokenTipo = None
         caracteres_aceitos = []
+
         if self.caracter_atual == '0' :
+
             charahead = self.lookahead()
+
             if charahead in ('b', 'B') :
                 self.avancar(2)
                 caracteres_aceitos = digitos_bin
@@ -189,10 +195,7 @@ class Lexer :
                 self.avancar(2)
                 caracteres_aceitos = digitos_hexa
                 tokenTipo = TokenTipo.TOKEN_HEXA
-            elif charahead in digitos_oct:
-                self.avancar()
-                caracteres_aceitos = digitos_oct
-                tokenTipo = TokenTipo.TOKEN_OCT
+
         if caracteres_aceitos == [] :
             while self.caracter_atual != None and self.caracter_atual in digitos + '.' :
                 if self.caracter_atual == '.' :
@@ -206,7 +209,10 @@ class Lexer :
                 numero_final += self.caracter_atual
                 self.avancar()
             return Token(tokenTipo, numero_final)
+        
         if contador_de_pontos == 0 :
+            if all([ char in digitos_oct for char in numero_final ]) and numero_final.startswith('0'):
+                return Token(TokenTipo.TOKEN_OCT, int(numero_final))
             return Token(TokenTipo.TOKEN_INT, int(numero_final))
         else :
             return Token(TokenTipo.TOKEN_REAL, float(numero_final))
