@@ -98,36 +98,29 @@ class TokenTipo ( Enum ) :
     TOKEN_IDENT      = 'TOKEN_IDENT'        # Identificador
     TOKEN_KEYWORD    = 'TOKEN_KEYWORD'      # Keyword
 
-# # KEYWORDS DO C
-# KEYWORD_AUTO     = 'AUTO'             
-# KEYWORD_BREAK    = 'BREAK'           
-# KEYWORD_DOUBLE   = 'DOUBLE'            
-# KEYWORD_CASE     = 'CASE'           
-# KEYWORD_CHAR     = 'CHAR'           
-# KEYWORD_CONST    = 'CONST'           
-# KEYWORD_CONTINUE = 'CONTINUE'           
-# KEYWORD_DEFAULT  = 'DEFAULT'           
-# KEYWORD_DO       = 'DO'           
-# KEYWORD_ELSE     = 'ELSE'           
-# KEYWORD_ENUM     = 'ENUM'           
-# KEYWORD_EXTERN   = 'EXTERN'           
-# KEYWORD_FLOAT    = 'FLOAT'           
-# KEYWORD_FOR      = 'FOR'           
-# KEYWORD_GOTO     = 'GOTO'           
-# KEYWORD_IF       = 'IF'           
-# KEYWORD_INT      = 'INT'           
-# KEYWORD_LONG     = 'LONG'           
-# KEYWORD_REGISTER = 'REGISTER'           
-# KEYWORD_RETURN   = 'RETURN'           
-# KEYWORD_SHORT    = 'SHORT'           
-# KEYWORD_SIGNED   = 'SIGNED'           
-# KEYWORD_SIZEOF   = 'SIZEOF'           
-# KEYWORD_STATIC   = 'STATIC'           
-# KEYWORD_STRUCT   = 'STRUCT'       
-# KEYWORD_SWITCH   = 'SWITCH'       
-# KEYWORD_TYPEDEF  = 'TYPEDEF'       
-# KEYWORD_UNION    = 'UNION'       
-# KEYWORD_UNSIGNED = 'UNSIGNED'           
-# KEYWORD_VOID     = 'VOID'       
-# KEYWORD_VOLATILE = 'VOLATILE'           
-# KEYWORD_WHILE    = 'WHILE'  
+operadores_unicos = {
+    '+' : TokenTipo.TOKEN_SOMA,
+    '-' : TokenTipo.TOKEN_SUB,
+    '*' : TokenTipo.TOKEN_ASTERISCO,
+    '!' : TokenTipo.TOKEN_NOT,
+    '?' : TokenTipo.TOKEN_TERN,
+    '~' : TokenTipo.TOKEN_NOTB,
+    '^' : TokenTipo.TOKEN_XOR,
+    ':' : TokenTipo.TOKEN_BITF,
+    '%' : TokenTipo.TOKEN_MOD
+}
+
+operadores_duplos = [
+    '>', '<', '|', '&', '=', '/'
+]
+
+separadores = {
+    '{' : TokenTipo.TOKEN_CHAVEE,
+    '}' : TokenTipo.TOKEN_CHAVED,
+    '(' : TokenTipo.TOKEN_PARE,
+    ')' : TokenTipo.TOKEN_PARD,
+    '[' : TokenTipo.TOKEN_COLCHETEE,
+    ']' : TokenTipo.TOKEN_COLCHETED,
+    ',' : TokenTipo.TOKEN_VIRG,
+    ';' : TokenTipo.TOKEN_PTV
+}
