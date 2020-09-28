@@ -17,10 +17,20 @@ class Lexer :
         em C como string.
         """
         self.codigo = codigo
-        self.posicao = Posicao()
-        self.caracter_atual = None
-        self.avancar()
+        self.linha_atual = ''
+        
+        if len(codigo) > 0 :
+            for i in range(len(codigo)) :
+                if codigo[i] not in [ '\n', None ] :
+                    self.linha_atual += codigo[i] 
+            self.posicao = Posicao()
+            self.caracter_atual = None
+            self.avancar()
+        else:
+            raise Exception("Código não pode ser vazio!")
 
+    def capturar_linha_atual ( self ) :
+        pass
 
     def lookahead ( self ) :
         """
@@ -33,12 +43,13 @@ class Lexer :
         return self.codigo [ index ] if index < len(self.codigo) else None
 
 
-    def avancar_ate ( self, char ) :
+    def avancar_ate ( self, chars ) :
         """
         Avança até o caracter passado por parâmetro.
         """
-        if char != None :
-            while self.caracter_atual != char :
+        if chars != None :
+            self.avancar() # Avança um pra não contar o atual
+            while self.caracter_atual not in chars :
                 self.avancar()
 
 
@@ -72,7 +83,8 @@ class Lexer :
                 tokens.append(token)
             elif self.caracter_atual in list(operadores_unicos.keys()) + operadores_duplos :
                 token = self.make_operador ()
-                tokens.append(token)
+                if token != None:
+                    tokens.append(token)
                 self.avancar()
             elif self.caracter_atual in alfabeto :
                 token = self.parse_word ()
@@ -90,7 +102,7 @@ class Lexer :
                 tokens.append(token)
                 self.avancar()
             else :
-                message = 'Erro durante parsing: "' +  self.caracter_atual + '" posição: ' + str(self.posicao)
+                message = 'Erro durante analise léxica: "' +  self.caracter_atual + '" posição: ' + str(self.posicao)
                 raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
@@ -137,8 +149,14 @@ class Lexer :
             return Token(TokenTipo.TOKEN_ATRIB)
         if self.caracter_atual == '/' :
             if self.lookahead() == '/' :
-                self.avancar_ate('\n')
-            return Token(TokenTipo.TOKEN_DIV)
+                self.avancar_ate(chars=['\n', None])
+            if self.lookahead() == '*' :
+                self.avancar(2)
+                while self.lookahead() not in ['/', None] :
+                    self.avancar_ate(chars=['*', None])
+                self.avancar()
+            else :
+                return Token(TokenTipo.TOKEN_DIV)
 
 
     def make_numbers ( self ) :
