@@ -1,8 +1,9 @@
 from core.util.posicao      import Posicao
 from core.util.token        import Token
 from core.util.tokenTipos   import TokenTipo, keywords
-from core.util.alfabeto     import digitos, alfabeto, alfanum, alfanumu
+from core.util.alfabeto     import *
 
+from copy import copy
 class Lexer : 
 
     def __init__ ( self, codigo : str ) :
@@ -11,9 +12,17 @@ class Lexer :
         self.caracter_atual = None
         self.avancar()
 
-    def avancar ( self ) :
-        self.posicao.avancar( quebrar_linha=( self.caracter_atual == '\n' ) )
-        self.caracter_atual = self.codigo[self.posicao.pos] if self.posicao.pos < len(self.codigo) else None
+    def lookahead ( self ) :
+        auxPos = copy(self.posicao)
+        self.posicao.avancar(quebrar_linha=( self.caracter_atual == '\n' ))
+        index = self.posicao.pos
+        self.posicao = auxPos
+        return self.codigo [ index ] if index < len(self.codigo) else None
+
+    def avancar ( self, qtd=1 ) :
+        for i in range ( qtd ) :
+            self.posicao.avancar( quebrar_linha=( self.caracter_atual == '\n' ) )
+            self.caracter_atual = self.codigo[self.posicao.pos] if self.posicao.pos < len(self.codigo) else None
 
     def tokenizar ( self ) :
         tokens = []
@@ -25,19 +34,8 @@ class Lexer :
                 tokens.append(token)
                 self.avancar()
             elif self.caracter_atual in digitos + '.':
-                numero_final = ''
-                contador_de_pontos = 0
-                while self.caracter_atual != None and self.caracter_atual in digitos + '.' :
-                    if self.caracter_atual == '.' :
-                        if contador_de_pontos == 1:
-                            break
-                        contador_de_pontos += 1
-                    numero_final += self.caracter_atual
-                    self.avancar()
-                if contador_de_pontos == 0 :
-                    tokens.append(Token(TokenTipo.TOKEN_INT, int(numero_final)))
-                else :
-                    tokens.append(Token(TokenTipo.TOKEN_REAL, float(numero_final)))
+                token = self.make_numbers()
+                tokens.append(token)
             elif self.caracter_atual in alfabeto :
                 token = self.parse_word ()
                 tokens.append(token)
@@ -65,7 +63,7 @@ class Lexer :
                     tokens.append(Token(TokenTipo.TOKEN_MULT_IG))
                     self.avancar()
                 else:
-                    tokens.append(Token(TokenTipo.TOKEN_MULT))
+                    tokens.append(Token(TokenTipo.TOKEN_ASTERISCO))
             elif self.caracter_atual == '-' :
                 self.avancar()
                 if self.caracter_atual == '-' :
@@ -175,6 +173,43 @@ class Lexer :
                 raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
+
+    def make_numbers ( self ) :
+        numero_final = ''
+        contador_de_pontos = 0
+        tokenTipo = None
+        caracteres_aceitos = []
+        if self.caracter_atual == '0' :
+            charahead = self.lookahead()
+            if charahead in ('b', 'B') :
+                self.avancar(2)
+                caracteres_aceitos = digitos_bin
+                tokenTipo = TokenTipo.TOKEN_BIN
+            elif charahead in ('x', 'X') :
+                self.avancar(2)
+                caracteres_aceitos = digitos_hexa
+                tokenTipo = TokenTipo.TOKEN_HEXA
+            elif charahead in digitos_oct:
+                self.avancar()
+                caracteres_aceitos = digitos_oct
+                tokenTipo = TokenTipo.TOKEN_OCT
+        if caracteres_aceitos == [] :
+            while self.caracter_atual != None and self.caracter_atual in digitos + '.' :
+                if self.caracter_atual == '.' :
+                    if contador_de_pontos == 1:
+                        break
+                    contador_de_pontos += 1
+                numero_final += self.caracter_atual
+                self.avancar()
+        else :
+            while self.caracter_atual != None and self.caracter_atual in caracteres_aceitos :
+                numero_final += self.caracter_atual
+                self.avancar()
+            return Token(tokenTipo, numero_final)
+        if contador_de_pontos == 0 :
+            return Token(TokenTipo.TOKEN_INT, int(numero_final))
+        else :
+            return Token(TokenTipo.TOKEN_REAL, float(numero_final))
 
     def make_preprocessor ( self ) :
         token_str = ''

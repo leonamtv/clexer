@@ -16,3 +16,10 @@ class Posicao :
 
     def __repr__ ( self ):
         return str(self)
+
+    def __copy__ ( self ) :
+        newPos = Posicao()
+        newPos.pos = self.pos
+        newPos.linha = self.linha
+        newPos.coluna = self.coluna
+        return newPos
