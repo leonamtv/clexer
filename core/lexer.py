@@ -70,7 +70,7 @@ class Lexer :
         """
         tokens = []
         while self.caracter_atual != None :
-            if self.caracter_atual in ' \t\n':
+            if self.caracter_atual in ' \t\n\r\b\v\f':
                 self.avancar()
             elif self.caracter_atual == '#' :
                 token = self.make_preprocessor ()
@@ -162,7 +162,8 @@ class Lexer :
     def make_numbers ( self ) :
         """
         Captura um token do tipo número, seja ele inteiro (
-        decimal, binário, octal ou hexadecimal) ou real.
+        decimal, binário, octal ou hexadecimal) ou real ( no-
+        tação científica ou não).
         """
         numero_final = ''
         contador_de_pontos = 0
@@ -196,7 +197,29 @@ class Lexer :
                 self.avancar()
             return Token(tokenTipo, numero_final)
         
-        if contador_de_pontos == 0 :
+        notacaoCientifica = self.caracter_atual in 'eE'
+
+        if notacaoCientifica and tokenTipo not in [ TokenTipo.TOKEN_HEXA, TokenTipo.TOKEN_BIN, TokenTipo.TOKEN_OCT ]:
+            numero_final += self.caracter_atual
+            self.avancar()
+            if self.caracter_atual in '+-' :
+                numero_final += self.caracter_atual
+                self.avancar()
+            contador_expoente = 0
+            while self.caracter_atual != None and self.caracter_atual in digitos  :
+                contador_expoente += 1
+                numero_final += self.caracter_atual
+                self.avancar()
+            if contador_expoente > 0 :
+                # TODO throw error
+                pass
+                
+        elif notacaoCientifica and tokenTipo in [ TokenTipo.TOKEN_HEXA, TokenTipo.TOKEN_BIN, TokenTipo.TOKEN_OCT ]:
+            # TODO throw error
+            pass
+
+        if contador_de_pontos == 0 and not notacaoCientifica:
+
             if all([ char in digitos_oct for char in numero_final ]) and \
                 numero_final.startswith('0') and \
                 not all([ char == '0' for char in numero_final ]):
