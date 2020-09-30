@@ -1,12 +1,11 @@
-from copy                   import copy
-from core.util.token        import Token
-from core.util.posicao      import Posicao
-from core.util.alfabeto     import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu
-from core.util.tokenTipos   import TokenTipo, keywords, operadores_duplos, operadores_unicos, separadores
-from core.util.seta         import seta
+from copy                            import copy
+from core.util.token                 import Token
+from core.util.posicao               import Posicao
+from core.util.alfabeto              import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu
+from core.util.tokenTipos            import TokenTipo, keywords, operadores_duplos, operadores_unicos, separadores
+from core.util.apontador_de_caracter import apontador_de_caracter
 
 import sys
-
 
 class Lexer : 
     """
@@ -64,12 +63,15 @@ class Lexer :
                 self.linha_atual = ''
             else :
                 self.linha_atual += self.caracter_atual
-            self.contexto = seta(self.posicao, self.linha_atual)
+            self.contexto = apontador_de_caracter(self.posicao, self.linha_atual)
             self.posicao.avancar( quebrar_linha=( self.caracter_atual == '\n' ) )
             self.caracter_atual = self.codigo[self.posicao.pos] if self.posicao.pos < len(self.codigo) else None
 
 
     def capturar_linha ( self ) :
+        """
+        Captura a linha atual do código.
+        """
         self.avancar()
         while self.caracter_atual != None and  self.caracter_atual != '\n' :
             self.linha_atual += self.caracter_atual
@@ -77,7 +79,11 @@ class Lexer :
         return self.linha_atual
 
     def get_new_contexto ( self ) :
-        new_contexto = seta(Posicao(self.posicao.pos + 1, self.posicao.linha, self.posicao.coluna), self.linha_atual)
+        """
+        Gera um novo contexto com uma apontador_de_caracter apontando para o
+        último caracter da linha atual.
+        """
+        new_contexto = apontador_de_caracter(Posicao(self.posicao.pos + 1, self.posicao.linha, self.posicao.coluna), self.linha_atual)
         return new_contexto
 
     def tokenizar ( self ) :

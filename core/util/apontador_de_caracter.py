@@ -1,4 +1,4 @@
-def seta ( pos, st ) :
+def apontador_de_caracter ( pos, st ) :
     string_final = st + '\n'
     for i in range(len(st)) :
         string_final += '^' if i == pos.pos else ' '
