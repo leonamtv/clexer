@@ -9,9 +9,12 @@ try :
         comando = input('> ')
         print(comando)
         lexer = Lexer(comando)
-        tokens = lexer.tokenizar()
-        for token in tokens:
-            print(token)
+        try : 
+            tokens = lexer.tokenizar()
+            for token in tokens:
+                print(token)
+        except Exception as ex:
+            print(ex)
 except KeyboardInterrupt :
     print('\b\bBye')
 except EOFError:

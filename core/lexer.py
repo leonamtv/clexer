@@ -3,6 +3,10 @@ from core.util.token        import Token
 from core.util.posicao      import Posicao
 from core.util.alfabeto     import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu
 from core.util.tokenTipos   import TokenTipo, keywords, operadores_duplos, operadores_unicos, separadores
+from core.util.seta         import seta
+
+import sys
+
 
 class Lexer : 
     """
@@ -18,19 +22,16 @@ class Lexer :
         """
         self.codigo = codigo
         self.linha_atual = ''
+        self.contexto = self.linha_atual
         
+        sys.tracebacklimit = 0
+
         if len(codigo) > 0 :
-            for i in range(len(codigo)) :
-                if codigo[i] not in [ '\n', None ] :
-                    self.linha_atual += codigo[i] 
             self.posicao = Posicao()
             self.caracter_atual = None
             self.avancar()
         else:
             raise Exception("Código não pode ser vazio!")
-
-    def capturar_linha_atual ( self ) :
-        pass
 
     def lookahead ( self ) :
         """
@@ -59,9 +60,25 @@ class Lexer :
         padrão avança em um caracter.
         """
         for _ in range ( qtd ) :
+            if self.caracter_atual in [ '\n', None ] :
+                self.linha_atual = ''
+            else :
+                self.linha_atual += self.caracter_atual
+            self.contexto = seta(self.posicao, self.linha_atual)
             self.posicao.avancar( quebrar_linha=( self.caracter_atual == '\n' ) )
             self.caracter_atual = self.codigo[self.posicao.pos] if self.posicao.pos < len(self.codigo) else None
 
+
+    def capturar_linha ( self ) :
+        self.avancar()
+        while self.caracter_atual != None and  self.caracter_atual != '\n' :
+            self.linha_atual += self.caracter_atual
+            self.avancar()
+        return self.linha_atual
+
+    def get_new_contexto ( self ) :
+        new_contexto = seta(Posicao(self.posicao.pos + 1, self.posicao.linha, self.posicao.coluna), self.linha_atual)
+        return new_contexto
 
     def tokenizar ( self ) :
         """
@@ -102,7 +119,9 @@ class Lexer :
                 tokens.append(token)
                 self.avancar()
             else :
-                message = 'Erro durante analise léxica: "' +  self.caracter_atual + '" posição: ' + str(self.posicao)
+                message = 'Erro durante analise léxica: "' +  self.caracter_atual + '" Caracter não identificado.\n\nposição: ' + str(self.posicao)
+                self.avancar()
+                message += '\nlinha:\n\n' + self.contexto
                 raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
         return tokens
@@ -202,6 +221,10 @@ class Lexer :
         if notacaoCientifica and tokenTipo not in [ TokenTipo.TOKEN_HEXA, TokenTipo.TOKEN_BIN, TokenTipo.TOKEN_OCT ]:
             numero_final += self.caracter_atual
             self.avancar()
+            if self.caracter_atual in [ None, '\n', ' ', '\t' ] :
+                message = self.get_new_contexto() + "\nErro: Deveria haver um número inteiro ou um sinal aqui."
+                message += '\nposição: ' + str(self.posicao)
+                raise Exception(message)
             if self.caracter_atual in '+-' :
                 numero_final += self.caracter_atual
                 self.avancar()
@@ -210,13 +233,10 @@ class Lexer :
                 contador_expoente += 1
                 numero_final += self.caracter_atual
                 self.avancar()
-            if contador_expoente > 0 :
-                # TODO throw error
-                pass
-                
-        elif notacaoCientifica and tokenTipo in [ TokenTipo.TOKEN_HEXA, TokenTipo.TOKEN_BIN, TokenTipo.TOKEN_OCT ]:
-            # TODO throw error
-            pass
+            if contador_expoente == 0 :
+                message = self.get_new_contexto() + "\nErro: Deveria haver um número inteiro aqui."
+                message += '\nposição: ' + str(self.posicao)
+                raise Exception(message)
 
         if contador_de_pontos == 0 and not notacaoCientifica:
 

@@ -1,6 +1,6 @@
 from core.lexer import Lexer
 
-c_file = open('samples/teste_3.c', 'r').read()
+c_file = open('samples/teste_2.c', 'r').read()
 # c_file = ''
 # print(c_file)
 lex = Lexer(c_file)

@@ -1,8 +1,8 @@
 class Posicao :
-    def __init__ ( self ) :
-        self.pos     = -1
-        self.linha   = 0
-        self.coluna  = -1
+    def __init__ ( self, pos=-1, linha=0, coluna=-1 ) :
+        self.pos     = pos
+        self.linha   = linha
+        self.coluna  = coluna
 
     def avancar ( self, quebrar_linha = False ) :
         self.pos     += 1
