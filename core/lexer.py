@@ -113,6 +113,10 @@ class Lexer :
                 token = self.make_preprocessor ()
                 tokens.append(token)
                 self.avancar()
+            elif self.caracter_atual == '.' :
+                if self.lookahead() not in digitos :
+                    self.avancar()
+                    tokens.append(Token(TokenTipo.TOKEN_STRUCT_REF))
             elif self.caracter_atual in digitos + '.':
                 token = self.make_numbers()
                 tokens.append(token)
