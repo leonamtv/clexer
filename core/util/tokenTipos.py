@@ -45,6 +45,7 @@ class TokenTipo ( Enum ) :
     TOKEN_COLCHETEE  = 'TOKEN_COLCHETEE'    # Colchete esquerdo             '['
     TOKEN_COLCHETED  = 'TOKEN_COLCHETED'    # Colchete direito              ']'
     TOKEN_ESPACO     = 'TOKEN_ESPACO'       # Não é armazenado, apenas para indicar a existência do separador ' '
+    TOKEN_QUEBRA     = 'TOKEN_QUEBRA'       # Não é armazenado, apenas para indicar a existência do separador '\n'
 
     # Números
     TOKEN_HEXA       = 'TOKEN_HEXA'         # Número hexadecimal            '0x[0-9a-fA-F]+'
@@ -117,13 +118,14 @@ operadores_duplos = [
 ]
 
 separadores = {
-    '{' : TokenTipo.TOKEN_CHAVEE,
-    '}' : TokenTipo.TOKEN_CHAVED,
-    '(' : TokenTipo.TOKEN_PARE,
-    ')' : TokenTipo.TOKEN_PARD,
-    '[' : TokenTipo.TOKEN_COLCHETEE,
-    ']' : TokenTipo.TOKEN_COLCHETED,
-    ',' : TokenTipo.TOKEN_VIRG,
-    ';' : TokenTipo.TOKEN_PTV,
-    ' ' : TokenTipo.TOKEN_ESPACO,
+    '{'  : TokenTipo.TOKEN_CHAVEE,
+    '}'  : TokenTipo.TOKEN_CHAVED,
+    '('  : TokenTipo.TOKEN_PARE,
+    ')'  : TokenTipo.TOKEN_PARD,
+    '['  : TokenTipo.TOKEN_COLCHETEE,
+    ']'  : TokenTipo.TOKEN_COLCHETED,
+    ','  : TokenTipo.TOKEN_VIRG,
+    ';'  : TokenTipo.TOKEN_PTV,
+    ' '  : TokenTipo.TOKEN_ESPACO,
+    '\n' : TokenTipo.TOKEN_QUEBRA,
 }

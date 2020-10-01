@@ -94,9 +94,9 @@ class Lexer :
         """
         Remove comentários com regex
         """
-        # Comentários de uma linha
-        self.codigo = re.sub(r"\/\*(\*(?!\/)|[^*])*\*\/", "", self.codigo)
         # Bloco de comentário
+        self.codigo = re.sub(r"\/\*(\*(?!\/)|[^*])*\*\/", "", self.codigo)
+        # Comentários de uma linha
         self.codigo = re.sub(r"(\/\/.+)", "", self.codigo)
 
 
@@ -115,8 +115,6 @@ class Lexer :
                 self.avancar()
             elif self.caracter_atual in digitos + '.':
                 token = self.make_numbers()
-                if self.caracter_atual in ('e', 'E') :
-                    pass
                 tokens.append(token)
             elif self.caracter_atual in list(operadores_unicos.keys()) + operadores_duplos :
                 token = self.make_operador ()
@@ -265,68 +263,20 @@ class Lexer :
         tação científica ou não).
         """
         numero_final = ''
-        contador_de_pontos = 0
-        tokenTipo = None
-        caracteres_aceitos = []
 
-        if self.caracter_atual == '0' :
-
-            charahead = self.lookahead()
-
-            if charahead in ('b', 'B') :
-                self.avancar(2)
-                caracteres_aceitos = digitos_bin
-                tokenTipo = TokenTipo.TOKEN_BIN
-            elif charahead in ('x', 'X') :
-                self.avancar(2)
-                caracteres_aceitos = digitos_hexa
-                tokenTipo = TokenTipo.TOKEN_HEXA
-
-        if caracteres_aceitos == [] :
-            while self.caracter_atual != None and self.caracter_atual in digitos + '.' :
-                if self.caracter_atual == '.' :
-                    if contador_de_pontos == 1:
-                        break
-                    contador_de_pontos += 1
-                numero_final += self.caracter_atual
-                self.avancar()
-        else :
-            while self.caracter_atual != None and self.caracter_atual in caracteres_aceitos :
-                numero_final += self.caracter_atual
-                self.avancar()
-            return Token(tokenTipo, numero_final)
-        
-        notacaoCientifica = self.caracter_atual in 'eE'
-
-        if notacaoCientifica and tokenTipo not in [ TokenTipo.TOKEN_HEXA, TokenTipo.TOKEN_BIN, TokenTipo.TOKEN_OCT ]:
+        while self.caracter_atual != None and self.caracter_atual not in separadores :
             numero_final += self.caracter_atual
             self.avancar()
-            if self.caracter_atual in [ None, '\n', ' ', '\t' ] :
-                message = self.get_new_contexto() + "\nErro: Deveria haver um número inteiro ou um sinal aqui."
-                message += '\nposição: ' + str(self.posicao)
-                raise Exception(message)
-            if self.caracter_atual in '+-' :
-                numero_final += self.caracter_atual
-                self.avancar()
-            contador_expoente = 0
-            while self.caracter_atual != None and self.caracter_atual in digitos  :
-                contador_expoente += 1
-                numero_final += self.caracter_atual
-                self.avancar()
-            if contador_expoente == 0 :
-                message = self.get_new_contexto() + "\nErro: Deveria haver um número inteiro aqui."
-                message += '\nposição: ' + str(self.posicao)
-                raise Exception(message)
 
-        if contador_de_pontos == 0 and not notacaoCientifica:
-
-            if all([ char in digitos_oct for char in numero_final ]) and \
-                numero_final.startswith('0') and \
-                not all([ char == '0' for char in numero_final ]):
-                return Token(TokenTipo.TOKEN_OCT, int(numero_final))
-            return Token(TokenTipo.TOKEN_INT, int(numero_final))
-        else :
-            return Token(TokenTipo.TOKEN_REAL, float(numero_final))
+        if numero_final.startswith('0b') or numero_final.startswith('0B') :
+            return Token(TokenTipo.TOKEN_BIN, numero_final )
+        if numero_final.startswith('0x') or numero_final.startswith('0X') :
+            return Token(TokenTipo.TOKEN_HEXA, numero_final )
+        if numero_final.startswith('0') :
+            return Token(TokenTipo.TOKEN_OCT, numero_final )
+        if '.' in numero_final :
+            return Token(TokenTipo.TOKEN_REAL, numero_final )
+        return Token(TokenTipo.TOKEN_INT, numero_final)
 
 
     def make_preprocessor ( self ) :
