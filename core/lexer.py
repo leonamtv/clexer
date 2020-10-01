@@ -1,7 +1,7 @@
 from copy                            import copy
 from core.util.token                 import Token
 from core.util.posicao               import Posicao
-from core.util.alfabeto              import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu
+from core.util.alfabeto              import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu, alfabeto_completo
 from core.util.tokenTipos            import TokenTipo, keywords, operadores_duplos, operadores_unicos, separadores
 from core.util.apontador_de_caracter import apontador_de_caracter
 
@@ -136,6 +136,11 @@ class Lexer :
                 token = self.make_separador()
                 tokens.append(token)
                 self.avancar()
+            elif self.caracter_atual not in alfabeto_completo :
+                message = 'Caracter fora do alfabeto reconhecido ' + str(self.posicao)
+                self.avancar()
+                message += '\nlinha:\n\n' + self.contexto
+                raise Exception(message)            
             else :
                 message = 'Erro durante analise léxica: "' +  self.caracter_atual + '" Caracter não identificado.\n\nposição: ' + str(self.posicao)
                 self.avancar()
