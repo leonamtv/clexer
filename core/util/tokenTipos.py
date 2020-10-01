@@ -44,7 +44,7 @@ class TokenTipo ( Enum ) :
     TOKEN_CHAVED     = 'TOKEN_CHAVED'       # Chave direita                 '}'
     TOKEN_COLCHETEE  = 'TOKEN_COLCHETEE'    # Colchete esquerdo             '['
     TOKEN_COLCHETED  = 'TOKEN_COLCHETED'    # Colchete direito              ']'
-
+    TOKEN_ESPACO     = 'TOKEN_ESPACO'       # Não é armazenado, apenas para indicar a existência do separador ' '
 
     # Números
     TOKEN_HEXA       = 'TOKEN_HEXA'         # Número hexadecimal            '0x[0-9a-fA-F]+'
@@ -74,6 +74,7 @@ class TokenTipo ( Enum ) :
     TOKEN_MOD        = 'TOKEN_MOD'          # Operador módulo                       '%'
     TOKEN_MOD_IG     = 'TOKEN_MOD_IG'       # Operador módulo e atribui             '%='
     TOKEN_NOT        = 'TOKEN_NOT'          # Operador negação                      '!'
+    TOKEN_NOT_IG     = 'TOKEN_NOT_IG'       # Operador diferente                    '!='
     TOKEN_TERN       = 'TOKEN_TERN'         # Operador ternário                     '?'
     TOKEN_MENOR      = 'TOKEN_MENOR'        # Operador menor                        '<'
     TOKEN_MAIOR      = 'TOKEN_MAIOR'        # Operador maior                        '>'
@@ -81,16 +82,22 @@ class TokenTipo ( Enum ) :
     TOKEN_MAIOR_IG   = 'TOKEN_MAIOR_IG'     # Operador maior igual                  '>='
     TOKEN_SHIFT_L    = 'TOKEN_SHIFT_L'      # Operador Shift para esquerda          '<<'
     TOKEN_SHIFT_R    = 'TOKEN_SHIFT_R'      # Operador Shift para direita           '>>'
+    TOKEN_SHIFT_L_IG = 'TOKEN_SHIFT_L_IG'   # Operador Shift para esquerda atribui  '<<='
+    TOKEN_SHIFT_R_IG = 'TOKEN_SHIFT_R_IG'   # Operador Shift para direita atribui   '>>='
     TOKEN_XOR        = 'TOKEN_XOR'          # Operador Or exclusivo                 '^'
+    TOKEN_XOR_IG     = 'TOKEN_XOR_IG'       # Operador Or exclusivo atribui         '^='
     TOKEN_OR         = 'TOKEN_OR'           # Operador Or                           '||' 
     TOKEN_ORB        = 'TOKEN_ORB'          # Operador Or bit a bit                 '|'
+    TOKEN_OR_IG      = 'TOKEN_ORB_IG'       # Operador Or atribui                   '|='
+    TOKEN_AMPERSAND  = 'TOKEN_AMPERSAND'    # Operador And bit a bit ou address     '&'
+    TOKEN_AND_IG     = 'TOKEN_AND_IG'       # Operador And atribui                  '&='
     TOKEN_AND        = 'TOKEN_AND'          # Operador And                          '&&'
-    TOKEN_ANDB       = 'TOKEN_ANDB'         # Operador And bit a bit                '&'
     TOKEN_NOTB       = 'TOKEN_NOTB'         # Operador Not bit a bit                '~'
     TOKEN_BITF       = 'TOKEN_BITF'         # Operador bit field                    ':'
     TOKEN_IGUAL      = 'TOKEN_IGUAL'        # Operador igual                        '=='
     TOKEN_ATRIB      = 'TOKEN_ATRIB'        # Operador atribuição                   '='
-    
+    TOKEN_STRUCT_REF = 'TOKEN_STRUCT_REF'   # Operador struct dereference           '->'
+
     TOKEN_VIRG       = 'TOKEN_VIRG'         # Virgula
     TOKEN_PTV        = 'TOKEN_PTV'          # Ponto e vírgula
     TOKEN_EOF        = 'TOKEN_EOF'          # Fim de arquivo
@@ -99,19 +106,14 @@ class TokenTipo ( Enum ) :
     TOKEN_KEYWORD    = 'TOKEN_KEYWORD'      # Keyword
 
 operadores_unicos = {
-    '+' : TokenTipo.TOKEN_SOMA,
-    '-' : TokenTipo.TOKEN_SUB,
-    '*' : TokenTipo.TOKEN_ASTERISCO,
-    '!' : TokenTipo.TOKEN_NOT,
     '?' : TokenTipo.TOKEN_TERN,
     '~' : TokenTipo.TOKEN_NOTB,
-    '^' : TokenTipo.TOKEN_XOR,
     ':' : TokenTipo.TOKEN_BITF,
-    '%' : TokenTipo.TOKEN_MOD
 }
 
 operadores_duplos = [
-    '>', '<', '|', '&', '=', '/'
+    '>', '<', '|', '&', '=', '/', '+',
+    '-', '*', '!', '^', '%'
 ]
 
 separadores = {
@@ -122,5 +124,6 @@ separadores = {
     '[' : TokenTipo.TOKEN_COLCHETEE,
     ']' : TokenTipo.TOKEN_COLCHETED,
     ',' : TokenTipo.TOKEN_VIRG,
-    ';' : TokenTipo.TOKEN_PTV
+    ';' : TokenTipo.TOKEN_PTV,
+    ' ' : TokenTipo.TOKEN_ESPACO,
 }

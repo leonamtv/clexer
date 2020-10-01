@@ -6,6 +6,7 @@ from core.util.tokenTipos            import TokenTipo, keywords, operadores_dupl
 from core.util.apontador_de_caracter import apontador_de_caracter
 
 import sys
+import re
 
 class Lexer : 
     """
@@ -28,6 +29,7 @@ class Lexer :
         if len(codigo) > 0 :
             self.posicao = Posicao()
             self.caracter_atual = None
+            self.remover_comentarios()
             self.avancar()
         else:
             raise Exception("Código não pode ser vazio!")
@@ -78,6 +80,7 @@ class Lexer :
             self.avancar()
         return self.linha_atual
 
+
     def get_new_contexto ( self ) :
         """
         Gera um novo contexto com uma apontador_de_caracter apontando para o
@@ -85,6 +88,17 @@ class Lexer :
         """
         new_contexto = apontador_de_caracter(Posicao(self.posicao.pos + 1, self.posicao.linha, self.posicao.coluna), self.linha_atual)
         return new_contexto
+
+
+    def remover_comentarios ( self ) :
+        """
+        Remove comentários com regex
+        """
+        # Comentários de uma linha
+        self.codigo = re.sub(r"\/\*(\*(?!\/)|[^*])*\*\/", "", self.codigo)
+        # Bloco de comentário
+        self.codigo = re.sub(r"(\/\/.+)", "", self.codigo)
+
 
     def tokenizar ( self ) :
         """
@@ -147,34 +161,94 @@ class Lexer :
         """
         if self.caracter_atual in list(operadores_unicos.keys()) :
             return Token(operadores_unicos[self.caracter_atual])
+        if self.caracter_atual == '+' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_SOMA_IG)
+            if self.lookahead() == '+' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_SOMA_UM)
+            return Token(TokenTipo.TOKEN_SOMA)
+        if self.caracter_atual == '-' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_SUB_IG)
+            if self.lookahead() == '-' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_SUB_UM)
+            if self.lookahead() == '>' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_STRUCT_REF)
+            return Token(TokenTipo.TOKEN_SUB)
         if self.caracter_atual == '>' :
             if self.lookahead() == '>' :
                 self.avancar()
+                if self.lookahead() == '=' :
+                    self.avancar()
+                    return Token(TokenTipo.TOKEN_SHIFT_R_IG)
                 return Token(TokenTipo.TOKEN_SHIFT_R)
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_MAIOR_IG)
             return Token(TokenTipo.TOKEN_MAIOR)
         if self.caracter_atual == '<' :
             if self.lookahead() == '<' :
                 self.avancar()
+                if self.lookahead() == '=' :
+                    self.avancar()
+                    return Token(TokenTipo.TOKEN_SHIFT_L_IG) 
                 return Token(TokenTipo.TOKEN_SHIFT_L)
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_MENOR_IG)            
             return Token(TokenTipo.TOKEN_MENOR)
         if self.caracter_atual == '|' :
             if self.lookahead() == '|' :
                 self.avancar()
                 return Token(TokenTipo.TOKEN_OR)
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_OR_IG)            
             return Token(TokenTipo.TOKEN_ORB)
+        if self.caracter_atual == '!' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_NOT_IG)
+            return Token(TokenTipo.TOKEN_NOT)
         if self.caracter_atual == '&' :
             if self.lookahead() == '&' :
                 self.avancar()
                 return Token(TokenTipo.TOKEN_AND)
-            return Token(TokenTipo.TOKEN_ANDB)
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_AND_IG)            
+            return Token(TokenTipo.TOKEN_AMPERSAND)
         if self.caracter_atual == '=' :
             if self.lookahead() == '=' :
                 self.avancar()
                 return Token(TokenTipo.TOKEN_IGUAL)
             return Token(TokenTipo.TOKEN_ATRIB)
+        if self.caracter_atual == '*' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_MULT_IG)
+            return Token(TokenTipo.TOKEN_ASTERISCO)
+        if self.caracter_atual == '%' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_MOD_IG)
+            return Token(TokenTipo.TOKEN_MOD)
+        if self.caracter_atual == '^' :
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_XOR_IG)
+            return Token(TokenTipo.TOKEN_XOR)
         if self.caracter_atual == '/' :
             if self.lookahead() == '/' :
                 self.avancar_ate(chars=['\n', None])
+            if self.lookahead() == '=' :
+                self.avancar()
+                return Token(TokenTipo.TOKEN_DIV_IG)
             if self.lookahead() == '*' :
                 self.avancar(2)
                 while self.lookahead() not in ['/', None] :

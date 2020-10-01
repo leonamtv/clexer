@@ -7,6 +7,9 @@
 #pragma startup func1  
 #pragma exit func2  
 
+/*
+    Teste de bloco de comentário
+*/
 int main() {
     char c;
     int lowercase_vowel, uppercase_vowel;
