@@ -13,6 +13,8 @@
 int main() {
     char c;
     int lowercase_vowel, uppercase_vowel;
+    int i = 0;
+
     printf("Enter an alphabet: ");
     scanf("%c", &c);
 
@@ -21,6 +23,13 @@ int main() {
 
     // evaluates to 1 if variable c is a uppercase vowel
     uppercase_vowel = (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U');
+
+
+    for ( i = 0; i < 10; ++i ) {
+        do {
+            i += 0;
+        } while ( i < 2 );
+    }
 
     // evaluates to 1 (true) if c is a vowel
     if (lowercase_vowel || uppercase_vowel)

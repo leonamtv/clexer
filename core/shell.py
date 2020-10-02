@@ -4,6 +4,8 @@ import sys
 
 sys.path.append('../')
 
+print("Shell para testes rápidos do lexer.\nAutor: Leonam Teixeira de Vasconcelos")
+
 try :
     while True :
         comando = input('> ')

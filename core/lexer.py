@@ -1,4 +1,5 @@
 from copy                            import copy
+from collections                     import deque
 from core.util.token                 import Token
 from core.util.posicao               import Posicao
 from core.util.alfabeto              import alfabeto, digitos, digitos_bin, digitos_hexa, digitos_oct, alfanumu, alfabeto_completo
@@ -103,7 +104,10 @@ class Lexer :
     def tokenizar ( self ) :
         """
         Tokeniza o código da classe Lexer e returna uma 
-        lista de tokens.
+        fila de tokens. Essa fila é a implementada inter-
+        namente na classe 'deque' do python, então em vez
+        de um método 'dequeue()' temos um 'popleft()' de 
+        funcionalidade equivalente. 
         """
         tokens = []
         while self.caracter_atual != None :
@@ -151,7 +155,7 @@ class Lexer :
                 message += '\nlinha:\n\n' + self.contexto
                 raise Exception(message)            
         tokens.append(Token(TokenTipo.TOKEN_EOF))
-        return tokens
+        return deque(tokens)
 
 
     def make_separador ( self ) :
@@ -281,7 +285,7 @@ class Lexer :
             return Token(TokenTipo.TOKEN_BIN, numero_final )
         if numero_final.startswith('0x') or numero_final.startswith('0X') :
             return Token(TokenTipo.TOKEN_HEXA, numero_final )
-        if numero_final.startswith('0') :
+        if numero_final.startswith('0') and len(numero_final) > 1 :
             return Token(TokenTipo.TOKEN_OCT, numero_final )
         if '.' in numero_final :
             return Token(TokenTipo.TOKEN_REAL, numero_final )
