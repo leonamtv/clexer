@@ -129,7 +129,7 @@ class Lexer :
                 if token != None:
                     tokens.append(token)
                 self.avancar()
-            elif self.caracter_atual in alfabeto :
+            elif self.caracter_atual in alfabeto + '_' :
                 token = self.parse_word ()
                 tokens.append(token)
             elif self.caracter_atual == '"':
